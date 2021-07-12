@@ -4,19 +4,17 @@ import Card from "../components/Card";
 import CustomButton from "../components/CustomButton";
 import Message from "../components/Message";
 
-
-let seconds = 10;
 let intervalId = null;
 
 const timeCounter = (seconds, direction, setter) => {
-  interValId = setInterval(() => {
-    if (direction == 'down' && seconds !== 0) {
+  intervalId = setInterval(() => {
+    if (direction == "down" && seconds !== 0) {
       return setter(seconds--);
-    } 
-    
-  }, 1000)
-}
-
+    } else if (direction == "up" && seconds !== 6) {
+      return setter(seconds++);
+    }
+  }, 1000);
+};
 
 const StartScreen = () => {
   const [timer, setTimer] = useState(10);
@@ -25,20 +23,33 @@ const StartScreen = () => {
   const [message, setMessage] = useState("");
   const [rounds, setRounds] = useState(0);
   const [over, setOver] = useState(false);
-  const [squzee, setSquzee] = useState(false);
+  const [squzee, setSquzee] = useState(true);
   const [release, setRelease] = useState(false);
 
-  console.log(squzee)
 
+// useEffect(() => {
+//   setSquzee(false)
+// }, [timer===1])
 
   const startHandler = () => {
-    setIstimerRunning(true)
-    setSquzee(true)
-    if (squzee) {
-      timeCounter(timer, 'up', setTimer);
+    setIstimerRunning(true);
+    if (squzee){
+      setMessage('SQUZEE')
+      timeCounter(timer, "down", setTimer);
+
+        setSquzee(false)
+
+    } 
+    if(!squzee) {
+      setMessage('Relax')
+      timeCounter(timer, "up", setTimer);
+      if (timer === 5) {
+        setSquzee(true)
+      }
     }
-  }
-  console.log(timer)
+  };
+
+  console.log(timer);
   const playHandler = () => {
     setIsPause(false);
     setMessage("SQUZEE");
@@ -48,18 +59,15 @@ const StartScreen = () => {
   const pauseHandler = () => {
     setIsPause(true);
     setMessage("PAUSED");
-    clearInterval(squzeeIntervalId);
-    setTimer(seconds);
+    clearInterval(intervalId);
   };
 
   const resetHandler = () => {
-    clearInterval(squzeeIntervalId);
+    clearInterval(intervalId);
     setIstimerRunning(false);
     setIsPause(false);
     setMessage("");
-    seconds = 10;
-    setTimer(seconds);
-    setSquzee(false)
+    setTimer(10);
   };
 
   let content;
